@@ -265,19 +265,41 @@ export default function WorkoutPage() {
                                     }}
                                 >
                                     <span style={{ fontSize: '1rem', fontWeight: '500', color: 'var(--text-primary)' }}>{ex.name}</span>
-                                    <span style={{
-                                        fontSize: '0.75rem',
-                                        color: 'var(--text-primary)',
-                                        backgroundColor: 'var(--accent-primary)',
-                                        padding: '0.35rem 0.75rem',
-                                        borderRadius: '1rem',
-                                        fontWeight: '600'
-                                    }}>
-                                        {ex.bodyPart}
-                                    </span>
+                                    <div style={{ display: 'flex', gap: '0.25rem' }}>
+                                        {ex.bodyParts && ex.bodyParts.map((part, i) => (
+                                            <span key={i} style={{
+                                                fontSize: '0.75rem',
+                                                color: 'var(--text-primary)',
+                                                backgroundColor: 'var(--accent-primary)',
+                                                padding: '0.35rem 0.75rem',
+                                                borderRadius: '1rem',
+                                                fontWeight: '600'
+                                            }}>
+                                                {part}
+                                            </span>
+                                        ))}
+                                    </div>
                                 </button>
                             ))}
                         </div>
+                        <button
+                            onClick={() => {
+                                setIsAddModalOpen(false);
+                                navigate('/exercises');
+                            }}
+                            style={{
+                                marginTop: '1rem',
+                                padding: '1rem',
+                                backgroundColor: 'var(--bg-primary)',
+                                color: 'var(--accent-primary)',
+                                borderRadius: 'var(--radius-md)',
+                                border: '1px dashed var(--border-color)',
+                                width: '100%',
+                                fontWeight: 'bold'
+                            }}
+                        >
+                            Manage Custom Exercises
+                        </button>
                     </div>
                 </div>
             )}

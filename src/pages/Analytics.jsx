@@ -14,9 +14,12 @@ export default function AnalyticsPage() {
         history.forEach(workout => {
             workout.exercises.forEach(exLog => {
                 const exercise = exercises.find(e => e.id === exLog.exerciseId);
-                if (exercise) {
+                if (exercise && exercise.bodyParts) {
                     const setsCount = exLog.sets.filter(s => s.completed).length;
-                    counts[exercise.bodyPart] = (counts[exercise.bodyPart] || 0) + setsCount;
+                    // Count each body part separately for multi-category exercises
+                    exercise.bodyParts.forEach(bodyPart => {
+                        counts[bodyPart] = (counts[bodyPart] || 0) + setsCount;
+                    });
                 }
             });
         });

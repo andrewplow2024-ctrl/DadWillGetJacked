@@ -4,14 +4,14 @@ import { v4 as uuidv4 } from 'uuid';
 const STORAGE_KEY = 'dad_will_get_jacked_data_v1';
 
 const defaultExercises = [
-    { id: '1', name: 'Bench Press', bodyPart: 'Chest' },
-    { id: '2', name: 'Squat', bodyPart: 'Legs' },
-    { id: '3', name: 'Deadlift', bodyPart: 'Back' },
-    { id: '4', name: 'Overhead Press', bodyPart: 'Shoulders' },
-    { id: '5', name: 'Pull Up', bodyPart: 'Back' },
-    { id: '6', name: 'Dumbbell Curl', bodyPart: 'Arms' },
-    { id: '7', name: 'Tricep Extension', bodyPart: 'Arms' },
-    { id: '8', name: 'Leg Press', bodyPart: 'Legs' },
+    { id: '1', name: 'Bench Press', bodyParts: ['Chest', 'Arms'] },
+    { id: '2', name: 'Squat', bodyParts: ['Legs'] },
+    { id: '3', name: 'Deadlift', bodyParts: ['Back', 'Legs'] },
+    { id: '4', name: 'Overhead Press', bodyParts: ['Shoulders', 'Arms'] },
+    { id: '5', name: 'Pull Up', bodyParts: ['Back', 'Arms'] },
+    { id: '6', name: 'Dumbbell Curl', bodyParts: ['Arms'] },
+    { id: '7', name: 'Tricep Extension', bodyParts: ['Arms'] },
+    { id: '8', name: 'Leg Press', bodyParts: ['Legs'] },
 ];
 
 const initialState = {
@@ -24,7 +24,18 @@ const initialState = {
 export function useWorkoutStore() {
     const [data, setData] = useState(() => {
         const saved = localStorage.getItem(STORAGE_KEY);
-        return saved ? JSON.parse(saved) : initialState;
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            // Migration: Convert old single bodyPart to array if needed
+            if (parsed.exercises && parsed.exercises.length > 0 && !parsed.exercises[0].bodyParts) {
+                parsed.exercises = parsed.exercises.map(ex => ({
+                    ...ex,
+                    bodyParts: ex.bodyPart ? [ex.bodyPart] : []
+                }));
+            }
+            return parsed;
+        }
+        return initialState;
     });
 
     useEffect(() => {
@@ -127,6 +138,25 @@ export function useWorkoutStore() {
         });
     };
 
+    const addExercise = (name, bodyParts) => {
+        const newExercise = {
+            id: uuidv4(),
+            name,
+            bodyParts
+        };
+        setData(prev => ({
+            ...prev,
+            exercises: [...prev.exercises, newExercise]
+        }));
+    };
+
+    const deleteExercise = (id) => {
+        setData(prev => ({
+            ...prev,
+            exercises: prev.exercises.filter(e => e.id !== id)
+        }));
+    };
+
     const getExerciseName = (id) => data.exercises.find(e => e.id === id)?.name || 'Unknown';
 
     return {
@@ -138,6 +168,8 @@ export function useWorkoutStore() {
         updateSet,
         addSet,
         removeSet,
+        addExercise,
+        deleteExercise,
         getExerciseName,
     };
 }

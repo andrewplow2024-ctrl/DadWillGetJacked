@@ -4,6 +4,7 @@ import HomePage from './pages/Home';
 import WorkoutPage from './pages/Workout';
 import HistoryPage from './pages/History';
 import AnalyticsPage from './pages/Analytics';
+import ManageExercisesPage from './pages/ManageExercises';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="workout" element={<WorkoutPage />} />
           <Route path="history" element={<HistoryPage />} />
           <Route path="analytics" element={<AnalyticsPage />} />
+          <Route path="exercises" element={<ManageExercisesPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
